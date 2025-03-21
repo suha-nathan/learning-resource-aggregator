@@ -1,3 +1,11 @@
-mongo-data
+# MongoDB data directory (large data, auto-generated)
+mongo-data/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Docker specific files
+*.log
 
 aggregation_service/.env
