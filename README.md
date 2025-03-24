@@ -1,6 +1,6 @@
 # Learning Resource Aggregator
 
-A data aggregation platform that fetches publicly available learning resources (books, courses, etc.) from multiple sources like Google Books and Coursera. The goal is to enable users to build self-directed, topic-based learning timelines using diverse resource formats.
+A data aggregation script that fetches publicly available learning resources (books, courses, etc.) from multiple sources like Google Books and Coursera. The data collected and tagged from this service is meant to be used in a learning platform that enable users to build self-directed, topic-based learning plans using a range of resources.
 
 ## Features
 
