@@ -1,6 +1,6 @@
 # Learning Resource Aggregator
 
-A data aggregation script that fetches publicly available learning resources (books, courses, etc.) from multiple sources like Google Books and Coursera. The data collected and tagged from this service is meant to be used in a learning platform that enable users to build self-directed, topic-based learning plans using a range of resources.
+A data aggregation script that fetches publicly available learning resources (books, courses, etc.) from multiple sources like Google Books and Coursera. The meta-data collected and tagged from this service is meant to be used in a learning platform that enable users to build self-directed, topic-based learning plans using a range of resources. There is no collection of actual book/course data - only meta-data.
 
 ## Features
 
@@ -8,7 +8,7 @@ A data aggregation script that fetches publicly available learning resources (bo
 - Tags and categorizes content programmatically
 - Stores resources in MongoDB with a flexible schema
 - Runs scheduled fetch/update jobs via a containerized Python service
-- Built with Docker Compose for easy local development and testing
+- Built with Docker Compose for local development and testing
 
 ## Project Structure
 
@@ -102,7 +102,7 @@ Or use [MongoDB Compass](https://www.mongodb.com/products/compass):
 
 - Connection string: `mongodb://localhost:27017`
 
-If data is unavailable outside the container - check that the port is correctly running the docker process
+If data is unavailable outside the container - check that the port is correctly running the docker process.
 
 ```bash
 lsof -i :27017
@@ -113,10 +113,11 @@ lsof -i :27017
 - The aggregator fetches topics like `"Python programming"`, `"Machine Learning"`, etc.
 - Tagging is handled programmatically using keyword-based rules.
 - Coursera API access is unofficial — structure may change.
+- Waiting on edX API Key approval
 
 ## To Do
 
-- Topics to pull data from should be automated/not hard coded
+- Topics to pull data from should be automated/not hard coded 
 - Add support for additional APIs or RSS feeds
 - Explore web scraping for unavailable learning resource meta-data
 - Build frontend interface for searching resources
