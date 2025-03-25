@@ -2,6 +2,7 @@ import os
 import requests
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from datetime import datetime
 from scripts.tagging_utils import generate_tags
 
 load_dotenv()
@@ -35,32 +36,42 @@ def fetch_and_store_google_books(topic):
         return
 
     for item in data["items"]:
-        volume = item["volumeInfo"]
-
-        title = volume.get("title", "")
-        description = volume.get("description", "")
-
-        resource = {
-            "title": title,
-            "description": description,
-            "tags": generate_tags(title, description),
-            "source": "Google Books",
-            "url": volume.get("infoLink", ""),
-            "contentType": "book",
-            "authors": volume.get("authors", []),
-            "publisher": volume.get("publisher", ""),
-            "categories": volume.get("categories", []),
-            "isbn": next(
-                (id["identifier"] for id in volume.get("industryIdentifiers", []) if id["type"] == "ISBN_13"),
-                None
+        try:
+            volume = item["volumeInfo"]
+            title = volume.get("title", "")
+            description = volume.get("description", "")
+            now = datetime.datetime.now().isoformat()
+            resource = {
+                "title": title,
+                "description": description,
+                "tags": generate_tags(title, description),
+                "source": "Google Books",
+                "url": volume.get("infoLink", ""),
+                "contentType": "book",
+                "authors": volume.get("authors", []),
+                "publisher": volume.get("publisher", ""),
+                "categories": volume.get("categories", []),
+                "isbn": next(
+                    (id["identifier"] for id in volume.get("industryIdentifiers", []) if id["type"] == "ISBN_13"),
+                    None
+                ),
+            }
+            print(f"Inserting resource into DB: {resource['title']}")
+            collection.update_one(
+                {"url": resource["url"]},
+                {
+                    "$set": {
+                        **resource,
+                        "updatedAt": now
+                    },
+                    "$setOnInsert":{
+                        "createdAt": now
+                    }
+                 },
+                upsert=True
             )
-        }
-        print(f"Inserting resource into DB: {resource['title']}")
-        collection.update_one(
-            {"url": resource["url"]},
-            {"$set": resource},
-            upsert=True
-        )
+        except Exception as e:
+            print(f"Error processing Google Book resource: {e}")
     print(f"MongoDB URI used: {MONGO_URI}")
     print(f"Google Books data successfully fetched and stored for topic: {topic}")
 

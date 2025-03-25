@@ -2,6 +2,7 @@ import requests
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 from scripts.tagging_utils import generate_tags
 
 load_dotenv()
@@ -9,6 +10,7 @@ load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
 
 def fetch_and_store_coursera_courses(query):
+    
     client = MongoClient(MONGO_URI)
     db = client["learning_resources"]
     collection = db["resources"]
@@ -33,27 +35,39 @@ def fetch_and_store_coursera_courses(query):
         return
 
     for course in data["elements"]:
-        title = course.get("name")
-        description = course.get("description", "")
-        slug = course.get("slug", "")
-        resource = {
-            "title": title,
-            "description": description,
-            "tags": generate_tags(title, description),
-            "source": "Coursera",
-            "url": f"https://www.coursera.org/learn/{slug}",
-            "contentType": "course",
-            "provider": "Coursera",
-            "difficulty": course.get("workload", ""),
-            "duration": None,  # Coursera API doesn't directly provide duration
-            "instructors": [],  # Additional API calls needed for detailed instructor info
-        }
+        try:
+            title = course.get("name")
+            description = course.get("description", "")
+            slug = course.get("slug", "")
+            now = datetime.datetime.now().isoformat()
+            resource = {
+                "title": title,
+                "description": description,
+                "tags": generate_tags(title, description),
+                "source": "Coursera",
+                "url": f"https://www.coursera.org/learn/{slug}",
+                "contentType": "course",
+                "provider": "Coursera",
+                "difficulty": course.get("workload", ""),
+                "duration": None,  # Coursera API doesn't directly provide duration
+                "instructors": [],  # Additional API calls needed for detailed instructor info
+            }
 
-        collection.update_one(
-            {"url": resource["url"]},
-            {"$set": resource},
-            upsert=True
-        )
+            collection.update_one(
+                {"url": resource["url"]},
+                {
+                    "$set": {
+                        **resource,
+                        "updatedAt": now
+                    },
+                    "$setOnInsert":{
+                        "createdAt": now
+                    }
+                 },
+                upsert=True
+            )
+        except Exception as e:
+            print(f"Error fetching Coursera resource: {e}")
 
     print(f"Coursera data successfully fetched and stored for query: {query}")
 
