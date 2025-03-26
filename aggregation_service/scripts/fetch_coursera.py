@@ -2,10 +2,12 @@ import requests
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timezone
 from scripts.tagging_utils import generate_tags
+from scripts.logger_utils import setup_logger
 
 load_dotenv()
+logger = setup_logger("coursera","fetch_coursera.log")
 
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017")
 
@@ -25,13 +27,13 @@ def fetch_and_store_coursera_courses(query):
 
     response = requests.get(endpoint, params=params)
     if response.status_code != 200:
-        print(f"Failed to fetch Coursera data for query: {query}")
+        logger.error(f"Failed to fetch Coursera data for query: {query}")
         return
 
     data = response.json()
 
     if "elements" not in data:
-        print(f"No results from Coursera API for query: {query}")
+        logger.error(f"No results from Coursera API for query: {query}")
         return
 
     for course in data["elements"]:
@@ -39,7 +41,7 @@ def fetch_and_store_coursera_courses(query):
             title = course.get("name")
             description = course.get("description", "")
             slug = course.get("slug", "")
-            now = datetime.datetime.now().isoformat()
+            now = datetime.now(timezone.utc).isoformat()
             resource = {
                 "title": title,
                 "description": description,
@@ -67,9 +69,9 @@ def fetch_and_store_coursera_courses(query):
                 upsert=True
             )
         except Exception as e:
-            print(f"Error fetching Coursera resource: {e}")
+            logger.error(f"Error fetching Coursera resource: {e}")
 
-    print(f"Coursera data successfully fetched and stored for query: {query}")
+    logger.info(f"Coursera data successfully fetched and stored for query: {query}")
 
 if __name__ == "__main__":
     queries = ["machine learning", "python programming", "business analytics"]
