@@ -117,8 +117,19 @@ lsof -i :27017
 
 ## To Do
 
-- Topics to pull data from should be automated/not hard coded 
+- Topics to pull data from should be automated/not hard coded
 - Add support for additional APIs or RSS feeds
 - Explore web scraping for unavailable learning resource meta-data
 - Build frontend interface for searching resources
 - Add error tracking and logging
+
+## Data Sources
+
+- [x] Coursera Unofficial API
+- [x] Google Books API
+- [ ] Edx API
+- [ ] Open Educational Resources Commons (OERC)
+- [ ] Youtube
+- [ ] Khan Academy
+- [ ] MIT OCW
+- [ ] freecodecamp
