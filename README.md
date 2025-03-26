@@ -31,7 +31,7 @@ learning-resource-aggregator/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/learning-resource-aggregator.git
+git clone git@github.com:suha-nathan/learning-resource-aggregator.git
 cd learning-resource-aggregator
 ```
 
