@@ -1,12 +1,4 @@
 services:
-  mongodb:
-    image: mongo:7.0
-    container_name: learning_resources_db
-    volumes:
-      - ./mongo-data:/data/db
-    ports:
-      - 27017:27017
-
   aggregator:
     build: ./aggregation_service
     container_name: resource_aggregator
@@ -14,7 +6,5 @@ services:
     volumes:
       - ./aggregation_service:/usr/src/app
     environment:
-      - MONGO_URI=mongodb://mongodb:27017
+      - MONGO_URI=${MONGODB_URI}
       - GOOGLE_BOOKS_API_KEY=${GOOGLE_BOOKS_API_KEY}
-    depends_on:
-      - mongodb

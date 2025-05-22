@@ -133,3 +133,17 @@ lsof -i :27017
 - [ ] Khan Academy
 - [ ] MIT OCW
 - [ ] freecodecamp
+- [ ] OpenStax
+- [ ] Awesome Lists GitHub
+- [ ] Google Certification
+
+## Categories to Collect from
+
+- Comp Science
+- Business
+- Data Science
+- Humanities
+- Engineering
+- Mathematics
+- Science
+-
